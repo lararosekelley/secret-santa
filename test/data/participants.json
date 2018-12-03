@@ -1,0 +1,34 @@
+{
+  "participants": [
+    {
+      "name": "John Doe",
+      "number": "+1 (123) 456-7890",
+      "disallow": [
+        "Jane Doe"
+      ]
+    },
+    {
+      "name": "Jane Doe",
+      "number": "+1 978-420-1460",
+      "disallow": [
+        "John Doe"
+      ]
+    },
+    {
+      "name": "Chad Truckley",
+      "number": "+14250027455"
+    },
+    {
+      "name": "Duncan Chudley",
+      "number": "781 445 3299"
+    },
+    {
+      "name": "Jordan Tucker",
+      "number": "1 800 54-GIANT"
+    },
+    {
+      "name": "Shithead McGee",
+      "number": "(857) 250-2233"
+    }
+  ]
+}
