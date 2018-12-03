@@ -1,17 +1,17 @@
 {
   "participants": [
     {
-      "name": "John Doe",
+      "name": "Elmer Dordle",
       "number": "+1 (123) 456-7890",
       "disallow": [
-        "Jane Doe"
+        "Biff"
       ]
     },
     {
-      "name": "Jane Doe",
+      "name": "Biff",
       "number": "+1 978-420-1460",
       "disallow": [
-        "John Doe"
+        "Elmer Dordle"
       ]
     },
     {
@@ -20,7 +20,10 @@
     },
     {
       "name": "Duncan Chudley",
-      "number": "781 445 3299"
+      "number": "781 445 3299",
+      "disallow": [
+        "Shithead McGee"
+      ]
     },
     {
       "name": "Jordan Tucker",

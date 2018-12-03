@@ -32,14 +32,14 @@ module SecretSanta
       participants.each do |participant|
         recipient = participants[rand 0..participants.length - 1]
 
-        unless participant[:disallow].includes?(recipient[:name]) ||
-               participant[:has_assignment] ||
-               recipient[:is_assigned]
-          list << { sender_number: participant[:number], recipient_name: recipient[:name] }
+        next if participant[:disallow].includes?(recipient[:name]) ||
+                participant[:has_assignment] ||
+                recipient[:is_assigned]
 
-          participant[:has_assignment] = true
-          recipient[:is_assigned] = true
-        end
+        list << { sender_number: participant[:number], recipient_name: recipient[:name] }
+
+        participant[:has_assignment] = true
+        recipient[:is_assigned] = true
       end
 
       break if participants.all? { |p| p[:has_assignment] && p[:is_assigned] }
