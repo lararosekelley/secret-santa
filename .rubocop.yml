@@ -4,6 +4,9 @@ Layout/IndentationWidth:
 Metrics/AbcSize:
   Max: 20
 
+Metrics/BlockLength:
+  Max: 50
+
 Metrics/LineLength:
   Max: 120
 
