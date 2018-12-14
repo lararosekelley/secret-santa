@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    secretsanta (1.0.1)
-      dotenv
-      twilio-ruby
+    secretsanta (1.0.2)
+      dotenv (~> 2.5)
+      twilio-ruby (~> 5.17)
 
 GEM
   remote: https://rubygems.org/

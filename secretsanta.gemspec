@@ -19,9 +19,10 @@ Gem::Specification.new do |spec|
   end
   spec.executables   = ['secretsanta']
   spec.require_paths = ['lib']
+  spec.required_ruby_version = '~> 2.5'
 
-  spec.add_dependency 'dotenv'
-  spec.add_dependency 'twilio-ruby'
+  spec.add_dependency 'dotenv', '~> 2.5'
+  spec.add_dependency 'twilio-ruby', '~> 5.17'
 
   spec.add_development_dependency 'bundler', '~> 1.17'
   spec.add_development_dependency 'minitest', '~> 5.0'
