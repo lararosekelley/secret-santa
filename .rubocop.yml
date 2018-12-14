@@ -1,6 +1,9 @@
 Layout/IndentationWidth:
   Width: 2
 
+Metrics/AbcSize:
+  Max: 20
+
 Metrics/LineLength:
   Max: 120
 

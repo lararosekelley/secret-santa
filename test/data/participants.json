@@ -4,34 +4,46 @@
       "name": "Elmer Dordle",
       "number": "+1 (123) 456-7890",
       "disallow": [
-        "Biff"
-      ]
+        "Bill Buckle"
+      ],
+      "is_assigned": false,
+      "has_assignment": false
     },
     {
-      "name": "Biff",
+      "name": "Bill Buckle",
       "number": "+1 978-420-1460",
       "disallow": [
         "Elmer Dordle"
-      ]
+      ],
+      "is_assigned": false,
+      "has_assignment": false
     },
     {
       "name": "Chad Truckley",
-      "number": "+14250027455"
+      "number": "+14250027455",
+      "is_assigned": false,
+      "has_assignment": false
     },
     {
       "name": "Duncan Chudley",
       "number": "781 445 3299",
       "disallow": [
         "Shithead McGee"
-      ]
+      ],
+      "is_assigned": false,
+      "has_assignment": false
     },
     {
       "name": "Jordan Tucker",
-      "number": "1 800 54-GIANT"
+      "number": "1 800 54-GIANT",
+      "is_assigned": false,
+      "has_assignment": false
     },
     {
       "name": "Shithead McGee",
-      "number": "(857) 250-2233"
+      "number": "(857) 250-2233",
+      "is_assigned": false,
+      "has_assignment": false
     }
   ]
 }

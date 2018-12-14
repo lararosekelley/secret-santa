@@ -11,6 +11,7 @@ module SecretSanta
 
   def notify_participants!(options)
     client = Twilio::REST::Client.new(options.twilio_account_sid, options.twilio_auth_token)
+    puts generate_mappings(options.participants)
 
     generate_mappings(options.participants).each do |mapping|
       client.messages.create(
@@ -22,30 +23,23 @@ module SecretSanta
   end
 
   def generate_mappings(participants_list)
-    list = []
-    participants = participants_list.each do |p|
-      p[:has_assignment] = false
-      p[:is_assigned] = false
-    end
+    [].tap do
+      loop do
+        participants_list.each do |participant|
+          index = rand 0..participants.length - 1
+          recipient = participants[index]
 
-    loop do
-      participants.each do |participant|
-        recipient = participants[rand 0..participants.length - 1]
+          next if try_again?(participant, recipient)
 
-        next if participant[:disallow].includes?(recipient[:name]) ||
-                participant[:has_assignment] ||
-                recipient[:is_assigned]
+          list << { sender_number: participant[:number], recipient_name: recipient[:name] }
 
-        list << { sender_number: participant[:number], recipient_name: recipient[:name] }
+          participant[:has_assignment] = true
+          participants[index][:is_assigned] = true
+        end
 
-        participant[:has_assignment] = true
-        recipient[:is_assigned] = true
+        break if done?(participants)
       end
-
-      break if participants.all? { |p| p[:has_assignment] && p[:is_assigned] }
     end
-
-    list
   end
 
   def help_text
@@ -61,5 +55,17 @@ module SecretSanta
       Command-line arguments:
 
     HEREDOC
+  end
+
+  private
+
+  def try_again?(sender, recipient)
+    disallowed = !sender[:disallow].nil? && sender[:disallow].include?(recipient[:name])
+
+    return true if disallowed || participant[:has_assignment] || recipient[:is_assigned]
+  end
+
+  def done?(participants)
+    participants.all? { |p| p[:has_assignment] && p[:is_assigned] }
   end
 end
