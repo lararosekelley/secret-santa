@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    secretsanta (1.0.0)
+    secretsanta (1.0.1)
       dotenv
       twilio-ruby
 
