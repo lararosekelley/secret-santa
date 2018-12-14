@@ -11,21 +11,27 @@ module SecretSanta
 
   def notify_participants!(options)
     client = Twilio::REST::Client.new(options.twilio_account_sid, options.twilio_auth_token)
-    puts generate_mappings(options.participants)
+    pairs = generate_pairs(options.participants)
 
-    generate_mappings(options.participants).each do |mapping|
+    return pairs if options.dry_run
+
+    pairs.each do |pair|
       client.messages.create(
-        body: "Happy holidays! You have been assigned to give a gift to #{mapping.recipient_name} this year.",
+        body: "Happy holidays! You have been assigned to give a gift to #{pair.recipient_name} this year.",
         from: options.from_number,
-        to: mapping.sender_number
+        to: pair.sender_number
       )
+    rescue Twilio::Rest::TwilioError => e
+      puts e.message
     end
+
+    "\nAll participants have been notified - happy holidays! 🎅 🎄 🎁\n\n"
   end
 
-  def generate_mappings(participants_list)
-    [].tap do
+  def generate_pairs(participants)
+    [].tap do |list|
       loop do
-        participants_list.each do |participant|
+        participants.each do |participant|
           index = rand 0..participants.length - 1
           recipient = participants[index]
 
@@ -42,6 +48,16 @@ module SecretSanta
     end
   end
 
+  def try_again?(sender, recipient)
+    disallowed = !sender[:disallow].nil? && sender[:disallow].include?(recipient[:name])
+
+    return true if disallowed || sender[:has_assignment] || recipient[:is_assigned]
+  end
+
+  def done?(participants)
+    participants.all? { |p| p[:has_assignment] && p[:is_assigned] }
+  end
+
   def help_text
     <<~HEREDOC
       SecretSanta, version #{VERSION}
@@ -55,17 +71,5 @@ module SecretSanta
       Command-line arguments:
 
     HEREDOC
-  end
-
-  private
-
-  def try_again?(sender, recipient)
-    disallowed = !sender[:disallow].nil? && sender[:disallow].include?(recipient[:name])
-
-    return true if disallowed || participant[:has_assignment] || recipient[:is_assigned]
-  end
-
-  def done?(participants)
-    participants.all? { |p| p[:has_assignment] && p[:is_assigned] }
   end
 end
