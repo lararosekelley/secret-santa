@@ -3,6 +3,7 @@
 > Send a text message to let everyone know their Secret Santa recipient!
 
 [![Gem](https://img.shields.io/gem/v/secretsanta.svg?style=flat)](http://rubygems.org/gems/secretsanta)
+[![Build Status](https://travis-ci.org/tylucaskelley/secret-santa.svg?branch=master)](https://travis-ci.org/tylucaskelley/secret-santa)
 
 ---
 
