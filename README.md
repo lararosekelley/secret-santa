@@ -2,6 +2,8 @@
 
 > Send a text message to let everyone know their Secret Santa recipient!
 
+[![Gem](https://img.shields.io/gem/v/secretsanta.svg?style=flat)](http://rubygems.org/gems/secretsanta)
+
 ---
 
 ## Installation
@@ -34,6 +36,26 @@ Alternatively, set the following environment variables:
 - `TWILIO_ACCOUNT_SID`
 - `TWILIO_AUTH_TOKEN`
 - `TWILIO_PHONE_NUMBER`
+
+The participants file is a JSON file, containing an array of people going to your event. It needs to be formatted as
+follows:
+
+```json
+{
+  "participants": [
+    {
+      "name": "John Doe",
+      "number": "+1 (123) 456-7890",
+      "disallow": [
+        "Jane Doe"
+      ],
+      "is_assigned": false,
+      "has_assignment": false
+    }
+}
+```
+
+The `disallow` array is optional, and contains an array of people the participant is not allowed to be paired with.
 
 ## Development
 
