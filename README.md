@@ -49,9 +49,7 @@ follows:
       "number": "+1 (123) 456-7890",
       "disallow": [
         "Jane Doe"
-      ],
-      "is_assigned": false,
-      "has_assignment": false
+      ]
     }
   ]
 }

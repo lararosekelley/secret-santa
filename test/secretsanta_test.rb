@@ -3,9 +3,18 @@
 require 'test_helper'
 
 describe SecretSanta do
-  before do
-    participants_file = 'test/data/participants.json'
-    @participants = JSON.parse(File.read(participants_file), symbolize_names: true)[:participants]
+  subject do
+    ::SecretSanta.new(
+      OpenStruct.new(
+        dry_run: true,
+        from_number: '1-234-567-8910',
+        participants: participants
+      )
+    )
+  end
+
+  let(:participants) do
+    JSON.parse(File.read('test/data/participants.json'), symbolize_names: true)[:participants]
   end
 
   describe '::VERSION' do
@@ -15,50 +24,60 @@ describe SecretSanta do
   end
 
   describe '#generate_pairs' do
-    it 'successfully generates a list of sender/recipient pairs for secret santa' do
-      pairs = ::SecretSanta.generate_pairs(@participants)
+    let(:pairs) { subject.generate_pairs }
 
+    it 'generates a list of sender/recipient pairs' do
       pairs.each do |p|
         refute_nil p[:sender_number]
         refute_nil p[:recipient_name]
       end
     end
-  end
 
-  describe '#try_again?' do
-    it 'returns nil if the recipient and sender are not assigned and not in the disallowed list' do
-      ::SecretSanta.try_again?(@participants[4], @participants[5]).must_equal nil
-    end
+    it 'respects the blacklist provided in the "disallow" array' do
 
-    it 'returns true when the sender and/or recipient are in the disallowed list' do
-      ::SecretSanta.try_again?(@participants[0], @participants[1]).must_equal true
-    end
-
-    it 'returns true when the sender has an assignment' do
-      @participants[0][:has_assignment] = true
-
-      ::SecretSanta.try_again?(@participants[0], @participants[2]).must_equal true
-    end
-
-    it 'returns true when the recipient has already been assigned' do
-      @participants[2][:is_assigned] = true
-
-      ::SecretSanta.try_again?(@participants[0], @participants[2]).must_equal true
     end
   end
 
   describe '#done?' do
     it 'returns false when not done' do
-      ::SecretSanta.done?(@participants).must_equal false
+      subject.done?.must_equal false
     end
 
     it 'returns true when done' do
-      completed = @participants.each do |p|
-        p[:is_assigned] = true
-        p[:has_assignment] = true
+      subject.generate_pairs
+
+      subject.done?.must_equal true
+    end
+  end
+
+  describe '#impossible?' do
+    describe 'only one participant' do
+      let(:participants) { [{ name: 'John Doe', number: '1-800-555-1234' }] }
+
+      it 'returns true' do
+        subject.impossible?.must_equal true
+      end
+    end
+
+    describe 'enough participants' do
+      describe 'hash missing keys' do
+        let(:participants) do
+          [
+            { name: 'John Doe', number: '1-800-555-1234' },
+            { name: 'Jane Doe' }
+          ]
+        end
+
+        it 'returns true' do
+          subject.impossible?.must_equal true
+        end
       end
 
-      ::SecretSanta.done?(completed).must_equal true
+      describe 'well-formatted file' do
+        it 'returns false' do
+          subject.impossible?.must_equal false
+        end
+      end
     end
   end
 end

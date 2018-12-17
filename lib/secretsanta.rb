@@ -2,63 +2,71 @@
 
 require 'twilio-ruby'
 
-require_relative 'secretsanta/version'
-
-module SecretSanta
+class SecretSanta
   class Error < StandardError; end
 
-  module_function
+  VERSION = '1.1.0'
 
-  def notify_participants!(options)
-    client = Twilio::REST::Client.new(options.twilio_account_sid, options.twilio_auth_token)
-    pairs = generate_pairs(options.participants)
+  def initialize(options)
+    @dry_run = options.dry_run
+    @from_number = options.from_number
+    @participants = options.participants
+    @sms = Twilio::REST::Client.new(options.twilio_account_sid, options.twilio_auth_token) unless @dry_run
+  end
 
-    return pairs if options.dry_run
+  def notify_participants!
+    pairs = generate_pairs
+
+    return pairs if @dry_run
 
     pairs.each do |pair|
-      client.messages.create(
+      @sms.messages.create(
         body: "Happy holidays! You have been assigned to give a gift to #{pair.recipient_name} this year.",
-        from: options.from_number,
+        from: @from_number,
         to: pair.sender_number
       )
     rescue Twilio::Rest::TwilioError => e
       puts e.message
     end
 
-    "\nAll participants have been notified - happy holidays! 🎅 🎄 🎁\n\n"
+    "\nAll participants have been notified. Happy holidays! 🎅 🎄 🎁\n\n"
   end
 
-  def generate_pairs(participants)
+  def generate_pairs
+    raise Error, SecretSanta.error_message if impossible?
+
     [].tap do |list|
       loop do
-        participants.each do |participant|
-          index = rand 0..participants.length - 1
-          recipient = participants[index]
+        @participants.each do |sender|
+          recipient = @participants.sample
 
-          next if try_again?(participant, recipient)
+          next if try_again?(sender, recipient)
 
-          list << { sender_number: participant[:number], recipient_name: recipient[:name] }
+          list << { sender_number: sender[:number], recipient_name: recipient[:name] }
 
-          participant[:has_assignment] = true
-          participants[index][:is_assigned] = true
+          sender[:has_assignment] = true
+          recipient[:is_assigned] = true
         end
 
-        break if done?(participants)
+        break if done?
       end
     end
   end
 
+  def done?
+    @participants.all? { |p| p[:has_assignment] && p[:is_assigned] }
+  end
+
+  def impossible?
+    @participants.one? || invalid_hash?
+  end
+
   def try_again?(sender, recipient)
-    disallowed = !sender[:disallow].nil? && sender[:disallow].include?(recipient[:name])
-
-    return true if disallowed || sender[:has_assignment] || recipient[:is_assigned]
+    sender[:has_assignment] || recipient[:is_assigned] || sender[:number] == recipient[:number] ||
+      !sender[:disallow].nil? && sender[:disallow].include?(recipient[:name])
   end
 
-  def done?(participants)
-    participants.all? { |p| p[:has_assignment] && p[:is_assigned] }
-  end
-
-  def help_text
+  def self.help_text
     <<~HEREDOC
       SecretSanta, version #{VERSION}
 
@@ -71,5 +79,25 @@ module SecretSanta
       Command-line arguments:
 
     HEREDOC
+  end
+
+  def self.error_message
+    <<~HEREDOC
+      Looks like something is wrong with your participants file. Make sure that it:
+
+        1. Follows the format specified in README.md
+        2. Contains enough participants so that everyone can be matched
+        3. Doesn't have too many blacklisted participants (see "disallow" array in README.md)
+    HEREDOC
+  end
+
+  private
+
+  def invalid_hash?
+    @participants.each do |participant|
+      return true unless %i[name number].all? { |k| participant.key? k }
+    end
+
+    false
   end
 end
