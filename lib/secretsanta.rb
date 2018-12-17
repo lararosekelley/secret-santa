@@ -5,7 +5,7 @@ require 'twilio-ruby'
 class SecretSanta
   class Error < StandardError; end
 
-  VERSION = '1.1.0'
+  VERSION = '1.1.1'
 
   def initialize(options)
     @dry_run = options.dry_run

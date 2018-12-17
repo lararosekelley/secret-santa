@@ -32,10 +32,6 @@ describe SecretSanta do
         refute_nil p[:recipient_name]
       end
     end
-
-    it 'respects the blacklist provided in the "disallow" array' do
-
-    end
   end
 
   describe '#done?' do
