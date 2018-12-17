@@ -53,6 +53,7 @@ follows:
       "is_assigned": false,
       "has_assignment": false
     }
+  ]
 }
 ```
 
