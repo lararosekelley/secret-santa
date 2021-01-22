@@ -2,6 +2,9 @@ name: Create Pull Request
 on:
   schedule:
     - cron: '0 9 * * 4'
+  push:
+    branches:
+      - develop
 jobs:
   open-pr:
     runs-on: ubuntu-latest
