@@ -10,11 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: repo-sync/pull-request@v2
         with:
-          ref: develop
-      - uses: peter-evans/create-pull-request@v3.6.0
-        with:
-          token: ${{ secrets.PAT }}
-          title: Promote develop to stage
-          commit-message: Merges develop branch into stage branch
-          branch: stage
+          github_token: ${{ secrets.PAT }}
+          source_branch: develop
+          destination_branch: stage
+          pr_title: Promote develop to stage
