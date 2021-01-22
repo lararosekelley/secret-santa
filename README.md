@@ -1,4 +1,4 @@
-# SecretSanta
+# secret-santa
 
 > Send a text message to let everyone know their Secret Santa recipient!
 
