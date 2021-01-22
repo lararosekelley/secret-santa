@@ -11,10 +11,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: stage
+          ref: develop
       - uses: peter-evans/create-pull-request@v3.6.0
         with:
           token: ${{ secrets.PAT }}
           title: Promote develop to stage
           commit-message: Merges develop branch into stage branch
-          branch: develop
+          branch: stage
